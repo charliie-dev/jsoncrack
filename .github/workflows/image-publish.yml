@@ -49,7 +49,7 @@ jobs:
         uses: actions/delete-package-versions@v5
         if: steps.pkg.outputs.exists == 'true'
         with:
-          package-name: "jsoncrack"
+          package-name: ${{ github.event.repository.name }}
           package-type: "container"
           delete-only-untagged-versions: true
           token: ${{ secrets.GITHUB_TOKEN }}
