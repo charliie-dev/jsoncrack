@@ -27,12 +27,11 @@ jobs:
           # ghcr package name is usually the repo name, lowercased
           echo "pkg=${GITHUB_REPOSITORY#*/}" >> "$GITHUB_OUTPUT"
           echo "pkg_lc=${GITHUB_REPOSITORY#*/}" | tr '[:upper:]' '[:lower:]' | \
-            awk '{print "pkg_lc="$0}' >> "$GITHUB_OUTPUT"
+            awk '{print $0}' >> "$GITHUB_OUTPUT"
 
       - name: Check if GHCR package exists (any tag)
         id: pkg
         env:
-          GH_TOKEN: ${{ github.token }}                 # used by gh
           OWNER: ${{ github.repository_owner }}
           PKG:   ${{ steps.vars.outputs.pkg_lc }}
         run: |
@@ -49,7 +48,7 @@ jobs:
         uses: actions/delete-package-versions@v5
         if: steps.pkg.outputs.exists == 'true'
         with:
-          package-name: ${{ github.event.repository.name }}
+          package-name: ${{ steps.vars.outputs.pkg_lc }}
           package-type: "container"
           delete-only-untagged-versions: true
           token: ${{ secrets.GITHUB_TOKEN }}
